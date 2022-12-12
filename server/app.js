@@ -1,11 +1,8 @@
-const express = require('express');
 const {handle404s } = require('./controllers/controller.errors');
 const {getCategories} = require('./controllers/controller.boardgames');
-
-
+const express = require('express');
 
 const app = express();
-app.use(express.json());
 
 app.get('/api/categories', getCategories)
 

@@ -1,4 +1,3 @@
-const {} = require('../../db/data/development-data/index');
 const db = require('../../db/connection');
 
 exports.selectCategories = () =>{
