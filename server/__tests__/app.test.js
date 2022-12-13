@@ -43,3 +43,33 @@ afterAll(() => {
         })
     })
   })
+
+  describe('3. GET /api/reviews', () =>{
+
+    test.only("status:200, returns an array of review objects", ()=>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(true).toBe(Array.isArray(reviews));
+            expect(reviews).toHaveLength(13);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        category: expect.any(String),
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+            })  
+            expect(reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+  })
