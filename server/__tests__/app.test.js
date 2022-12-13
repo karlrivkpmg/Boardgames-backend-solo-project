@@ -122,7 +122,6 @@ afterAll(() => {
         .expect(200)
         .then((response)=>{
             const comments = response.body.comments;
-            expect(true).toBe(Array.isArray(comments));
             expect(comments).toHaveLength(3);
             comments.forEach(comment =>{
                 expect(comment).toEqual(
@@ -140,7 +139,7 @@ afterAll(() => {
         })
     })
 
-    test("status:200, returns an empty array matching the parametric review_id", ()=>{
+    test("status:200, returns a valid empty array as review_id is valid and exists but there are are no assicated comments", ()=>{
         return request(app)
         .get('/api/reviews/1/comments')
         .expect(200)
