@@ -24,4 +24,4 @@ exports.selectReviews = () =>{
     .then((result)=>{
     return result.rows;
 })
-}}
+}
