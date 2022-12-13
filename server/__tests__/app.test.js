@@ -44,23 +44,33 @@ afterAll(() => {
     })
   })
 
-  describe('4. GET /api/reviews/:review_id', () =>{
 
-    test("status:200, returns a specific review object matching the parametric review_id", ()=>{
+  describe('3. GET /api/reviews', () =>{
+
+    test.only("status:200, returns an array of review objects", ()=>{
         return request(app)
-        .get('/api/reviews/1')
+        .get('/api/reviews')
         .expect(200)
         .then((response)=>{
-            const review = response.body.review;
-            expect(review.title).toBe('Agricola');
-            expect(review.designer).toBe('Uwe Rosenberg');
-            expect(review.owner).toBe('Mallionaire');
-            expect(review.review_img_url).toBe( 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png');
-            expect(review.body).toBe('Farmyard fun!');
-            expect(review.categroy).toBe('euro game');
-            expect(review.date).toBe(1610964020514);
-            expect(review.votes).toBe(1);
-            epxec(review.review_id).toBe(1);
+            const reviews = response.body.reviews;
+            expect(true).toBe(Array.isArray(reviews));
+            expect(reviews).toHaveLength(13);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        category: expect.any(String),
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+            })  
+            expect(reviews).toBeSortedBy('created_at', {descending: true});
         })
     })
   })
