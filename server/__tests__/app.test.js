@@ -83,7 +83,6 @@ afterAll(() => {
         .expect(200)
         .then((response)=>{
             const review = response.body.review;
-            console.log(review);
             expect(review.title).toBe('Agricola');
             expect(review.designer).toBe('Uwe Rosenberg');
             expect(review.owner).toBe('mallionaire');
