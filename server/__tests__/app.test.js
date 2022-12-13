@@ -47,7 +47,7 @@ afterAll(() => {
 
   describe('3. GET /api/reviews', () =>{
 
-    test.only("status:200, returns an array of review objects", ()=>{
+    test("status:200, returns an array of review objects", ()=>{
         return request(app)
         .get('/api/reviews')
         .expect(200)
@@ -71,6 +71,46 @@ afterAll(() => {
                 )
             })  
             expect(reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+  })
+
+  describe('4. GET /api/reviews/:review_id', () =>{
+
+    test("status:200, returns a specific review object matching the parametric review_id", ()=>{
+        return request(app)
+        .get('/api/reviews/1')
+        .expect(200)
+        .then((response)=>{
+            const review = response.body.review;
+            console.log(review);
+            expect(review.title).toBe('Agricola');
+            expect(review.designer).toBe('Uwe Rosenberg');
+            expect(review.owner).toBe('mallionaire');
+            expect(review.review_img_url).toBe( 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png');
+            expect(review.review_body).toBe('Farmyard fun!');
+            expect(review.category).toBe('euro game');
+            expect(review.created_at).toBe('2021-01-18T10:00:20.514Z');
+            expect(review.votes).toBe(1);
+            expect(review.review_id).toBe(1);
+        })
+    })
+
+    test("status:404, valid review_id but does not exist", ()=>{
+        return request(app)
+        .get('/api/reviews/100000')
+        .expect(404)
+        .then((response)=>{
+            expect(response.body.msg).toBe("ID not found");
+        })
+    })
+
+    test("status:400, invalid review_id", ()=>{
+        return request(app)
+        .get('/api/reviews/bread')
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Invalid ID given");
         })
     })
   })
