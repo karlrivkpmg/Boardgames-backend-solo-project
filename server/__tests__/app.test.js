@@ -83,7 +83,6 @@ afterAll(() => {
         .expect(200)
         .then((response)=>{
             const review = response.body.review;
-            console.log(review);
             expect(review.title).toBe('Agricola');
             expect(review.designer).toBe('Uwe Rosenberg');
             expect(review.owner).toBe('mallionaire');
@@ -108,6 +107,61 @@ afterAll(() => {
     test("status:400, invalid review_id", ()=>{
         return request(app)
         .get('/api/reviews/bread')
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Invalid ID given");
+        })
+    })
+  })
+
+  describe('5. GET /api/reviews/:review_id/comments', () =>{
+
+    test("status:200, returns an array of comments matching the parametric review_id", ()=>{
+        return request(app)
+        .get('/api/reviews/2/comments')
+        .expect(200)
+        .then((response)=>{
+            const comments = response.body.comments;
+            expect(true).toBe(Array.isArray(comments));
+            expect(comments).toHaveLength(3);
+            comments.forEach(comment =>{
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        review_id: expect.any(Number),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+            }) 
+            expect(comments).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+
+    test("status:200, returns an empty array matching the parametric review_id", ()=>{
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then((response)=>{
+            const comments = response.body.comments;
+            expect(comments).toEqual([]);
+        })
+    })
+
+    test("status:404, valid review_id but does not exist", ()=>{
+        return request(app)
+        .get('/api/reviews/100000/comments')
+        .expect(404)
+        .then((response)=>{
+            expect(response.body.msg).toBe("ID not found");
+        })
+    })
+
+    test("status:400, invalid review_id", ()=>{
+        return request(app)
+        .get('/api/reviews/bread/comments')
         .expect(400)
         .then((response)=>{
             expect(response.body.msg).toBe("Invalid ID given");
