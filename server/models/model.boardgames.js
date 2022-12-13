@@ -10,3 +10,7 @@ exports.selectCategories = () =>{
         return(result.rows);
     })
 }
+
+exports.selectReviewById = (review_id) =>{
+    
+}

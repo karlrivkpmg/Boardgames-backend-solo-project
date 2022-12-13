@@ -43,3 +43,24 @@ afterAll(() => {
         })
     })
   })
+
+  describe('4. GET /api/reviews/:review_id', () =>{
+
+    test("status:200, returns a specific review object matching the parametric review_id", ()=>{
+        return request(app)
+        .get('/api/reviews/1')
+        .expect(200)
+        .then((response)=>{
+            const review = response.body.review;
+            expect(review.title).toBe('Agricola');
+            expect(review.designer).toBe('Uwe Rosenberg');
+            expect(review.owner).toBe('Mallionaire');
+            expect(review.review_img_url).toBe( 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png');
+            expect(review.body).toBe('Farmyard fun!');
+            expect(review.categroy).toBe('euro game');
+            expect(review.date).toBe(1610964020514);
+            expect(review.votes).toBe(1);
+            epxec(review.review_id).toBe(1);
+        })
+    })
+  })
