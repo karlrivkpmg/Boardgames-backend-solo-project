@@ -1,4 +1,4 @@
-const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId } = require('../models/model.boardgames')
+const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId, updateReviewById } = require('../models/model.boardgames')
 
 exports.getCategories = (req, res) => {
     selectCategories()
@@ -47,7 +47,23 @@ exports.postCommentByReviewId = (req, res, next) =>{
         res.status(201).send({comment});
     })
     .catch((err)=>{
-        console.log(err);
+        next(err);
+    })
+}
+
+exports.patchReviewById = (req, res, next) =>{
+    const {review_id} = req.params;
+    const {voteInc} = req.body;
+    const promises = [selectReviewById(review_id), review_id, voteInc];
+    
+    Promise.all(promises)
+    .then((promises)=>{
+        return updateReviewById(promises);
+    })
+    .then((review)=>{
+        res.status(200).send({review});
+    })
+    .catch((err)=>{
         next(err);
     })
 }
