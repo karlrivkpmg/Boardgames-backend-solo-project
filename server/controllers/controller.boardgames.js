@@ -1,4 +1,4 @@
-const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById } = require('../models/model.boardgames')
+const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId } = require('../models/model.boardgames')
 
 exports.getCategories = (req, res) => {
     selectCategories()
@@ -36,4 +36,18 @@ exports.getReviewCommentsById = (req, res, next) =>{
         next(err);
     });
 
+}
+
+exports.postCommentByReviewId = (req, res, next) =>{
+    const {review_id} = req.params;
+    const {newComment} = req.body;
+
+    insertCommentByReviewId(review_id, newComment)
+    .then((comment)=>{
+        res.status(201).send({comment});
+    })
+    .catch((err)=>{
+        console.log(err);
+        next(err);
+    })
 }
