@@ -1,4 +1,4 @@
-exports.handle404s = (req, res) => {
+exports.handle404s = (err, req, res) => {
     res.status(404).send({ msg: 'Route not found'});
   };
 
@@ -16,7 +16,7 @@ exports.handle400s = (err, req, res, next) =>{
   }else if(err.code === "23503"){
     res.status(404).send({msg: "ID not found"});
   }else if(err.code === "23502"){
-    res.status(400).send({msg: "No body and/or author provided for comment"});
+    res.status(400).send({msg: "Issue with either the body or username"});
   }else{
     next(err);
   }

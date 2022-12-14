@@ -1,7 +1,7 @@
 const db = require('../../db/connection');
 
 exports.selectCategories = () =>{
-    let sql = `SELECT * 
+    const sql = `SELECT * 
                FROM categories;`
 
     return db
@@ -13,7 +13,7 @@ exports.selectCategories = () =>{
 
     
 exports.selectReviews = () =>{
-    let sql = `SELECT title, designer, owner, review_img_url, category,reviews.created_at, reviews.votes, reviews.review_id, COUNT(comments.review_id) AS comment_count
+    const sql = `SELECT title, designer, owner, review_img_url, category,reviews.created_at, reviews.votes, reviews.review_id, COUNT(comments.review_id) AS comment_count
     FROM reviews
     LEFT JOIN comments
     ON reviews.review_id = comments.review_id
@@ -27,7 +27,7 @@ exports.selectReviews = () =>{
 }
 
 exports.selectReviewById = (review_id) => {
-    let sql = `SELECT * 
+    const sql = `SELECT * 
                 FROM reviews
                 WHERE review_id = $1;`
     return db
@@ -42,7 +42,7 @@ exports.selectReviewById = (review_id) => {
 }
 
 exports.selectReviewCommentsById = (review_id) =>{
-    let sql = `SELECT *
+    const sql = `SELECT *
                FROM comments
                WHERE review_id = $1
                ORDER BY created_at desc;`
@@ -54,7 +54,7 @@ exports.selectReviewCommentsById = (review_id) =>{
 } 
 
 exports.insertCommentByReviewId = (review_id, newComment) =>{
-    let sql = `INSERT INTO comments (review_id, body, author)
+    const sql = `INSERT INTO comments (review_id, body, author)
                 values($1,$2,$3)
                 RETURNING *;`
 
@@ -63,3 +63,4 @@ exports.insertCommentByReviewId = (review_id, newComment) =>{
         return result.rows[0];
     })
 }
+
