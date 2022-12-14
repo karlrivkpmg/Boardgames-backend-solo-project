@@ -52,3 +52,14 @@ exports.selectReviewCommentsById = (review_id) =>{
         return result.rows;
     }));
 } 
+
+exports.insertCommentByReviewId = (review_id, newComment) =>{
+    let sql = `INSERT INTO comments (review_id, body, author)
+                values($1,$2,$3)
+                RETURNING *;`
+
+    return db.query(sql,[review_id, newComment.body, newComment.username])
+    .then((result)=>{
+        return result.rows[0];
+    })
+}

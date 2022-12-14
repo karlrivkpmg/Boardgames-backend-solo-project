@@ -167,3 +167,80 @@ afterAll(() => {
         })
     })
   })
+
+  describe('6. PUSH /api/reviews/:review_id/comments', () =>{
+
+    test("status:201, returns a comment matching the parametric review_id", ()=>{
+        const newComment = {
+            username: "philippaclaire9",
+            body: "Loved the film, wicked!"
+        };
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({newComment})
+        .expect(201)
+        .then((response)=>{
+            const comment = response.body.comment;
+            expect(comment.comment_id).toBe(7);
+            expect(comment.body).toBe( "Loved the film, wicked!");
+            expect(comment.review_id).toBe(2);
+            expect(comment.author).toBe("philippaclaire9");
+            expect(comment.votes).toBe(0);
+        })
+    })
+
+    test('status:400, malformed body, no body"', () =>{
+        const newComment = {
+            username: "philippaclaire9"
+            };
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({newComment})
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe("No body and/or author provided for comment");
+        })
+    }) 
+
+    test('status:400, malformed body, no author"', () =>{
+        const newComment = {
+            body: "Loved the film, wicked!"
+            };
+        return request(app)
+        .post('/api/reviews/2/comments')
+        .send({newComment})
+        .expect(400)
+        .then((response) =>{
+            expect(response.body.msg).toBe("No body and/or author provided for comment");
+        })
+    }) 
+
+    test("status:404, valid review_id but does not exist", ()=>{
+        const newComment = {
+            username: "philippaclaire9",
+            body: "Loved the film, wicked!"
+        };
+        return request(app)
+        .post('/api/reviews/100000/comments')
+        .send({newComment})
+        .expect(404)
+        .then((response)=>{
+            expect(response.body.msg).toBe("ID not found");
+        })
+    })
+
+    test("status:400, invalid review_id", ()=>{
+        const newComment = {
+            username: "philippaclaire9",
+            body: "Loved the film, wicked!"
+        };
+        return request(app)
+        .post('/api/reviews/bread/comments')
+        .send({newComment})
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Invalid ID given");
+        })
+    })
+  })
+
