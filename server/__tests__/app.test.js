@@ -168,7 +168,7 @@ afterAll(() => {
     })
   })
 
-  describe.only('6. PUSH /api/reviews/:review_id/comments', () =>{
+  describe('6. PUSH /api/reviews/:review_id/comments', () =>{
 
     test("status:201, returns a comment matching the parametric review_id", ()=>{
         const newComment = {
@@ -279,3 +279,4 @@ afterAll(() => {
     })
   })
 
+ 

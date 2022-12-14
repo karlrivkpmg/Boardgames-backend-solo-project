@@ -64,3 +64,30 @@ exports.insertCommentByReviewId = (review_id, newComment) =>{
     })
 }
 
+exports.updateReviewById = (promises) =>{
+    console.log("model");
+    const review = promises[0];
+    const review_id =promises[1];
+    const {voteInc} = promises[2];
+
+    let sql =``;
+    if(typeof voteInc !== "number"){
+        return Promise.reject({msg: "Incorrect type passed for voteInc", status:400});
+    }else{
+        if(review.votes + voteInc >= 0){
+            sql = `UPDATE reviews
+                    SET votes = votes +$1
+                    WHERE review_id = $2
+                    RETURNING *;`
+        }else{
+            return Promise.reject({msg: "Attempting to decrement votes by too much", status:404});
+        }
+    }
+
+    return db
+    .query(sql, [voteInc, review_id])
+    .then((result)=>{
+        return result.rows[0];
+    })
+
+}
