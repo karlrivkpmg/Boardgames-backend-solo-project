@@ -90,3 +90,13 @@ exports.updateReviewById = (promises) =>{
     })
 
 }
+
+exports.selectUsers = () =>{
+    const sql = `SELECT * 
+                 FROM users;`
+    return db
+    .query(sql)
+    .then((result)=>{
+        return result.rows;
+    })
+}

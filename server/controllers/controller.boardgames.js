@@ -1,4 +1,4 @@
-const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId, updateReviewById } = require('../models/model.boardgames')
+const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId, updateReviewById, selectUsers } = require('../models/model.boardgames')
 
 exports.getCategories = (req, res) => {
     selectCategories()
@@ -68,5 +68,10 @@ exports.patchReviewById = (req, res, next) =>{
     })
 }
 
-
+exports.getUsers = (req, res) =>{
+    selectUsers()
+    .then((users)=>{
+        res.status(200).send({users});
+    })
+}
 
