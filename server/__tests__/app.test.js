@@ -279,4 +279,117 @@ afterAll(() => {
     })
   })
 
- 
+  describe('7. PATCH /api/reviews/:review_id', () =>{
+    test("status:200, returns the review with the updated votes, incrementing", ()=>{
+        const voteInc = {voteInc :3};
+
+        return request(app)
+        .patch('/api/reviews/1')
+        .send({voteInc})
+        .expect(200)
+        .then((response)=>{
+            const review = response.body.review;
+            expect(review.title).toBe('Agricola');
+            expect(review.designer).toBe('Uwe Rosenberg');
+            expect(review.owner).toBe('mallionaire');
+            expect(review.review_img_url).toBe( 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png');
+            expect(review.review_body).toBe('Farmyard fun!');
+            expect(review.category).toBe('euro game');
+            expect(review.created_at).toBe('2021-01-18T10:00:20.514Z');
+            expect(review.votes).toBe(4);
+            expect(review.review_id).toBe(1);
+        })
+    })
+
+    test("status:200, returns the review with the updated votes, decrementing", ()=>{
+        const voteInc = {voteInc :-1};
+
+        return request(app)
+        .patch('/api/reviews/1')
+        .send({voteInc})
+        .expect(200)
+        .then((response)=>{
+            const review = response.body.review;
+            expect(review.title).toBe('Agricola');
+            expect(review.designer).toBe('Uwe Rosenberg');
+            expect(review.owner).toBe('mallionaire');
+            expect(review.review_img_url).toBe( 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png');
+            expect(review.review_body).toBe('Farmyard fun!');
+            expect(review.category).toBe('euro game');
+            expect(review.created_at).toBe('2021-01-18T10:00:20.514Z');
+            expect(review.votes).toBe(0);
+            expect(review.review_id).toBe(1);
+        })
+    })
+
+    test("status:200, returns the review with the updated votes, decrementing, even though exra info has been passed in body", ()=>{
+        const voteInc = {voteInc :-1, nonsense: "aijdskl"};
+
+        return request(app)
+        .patch('/api/reviews/1')
+        .send({voteInc})
+        .expect(200)
+        .then((response)=>{
+            const review = response.body.review;
+            expect(review.title).toBe('Agricola');
+            expect(review.designer).toBe('Uwe Rosenberg');
+            expect(review.owner).toBe('mallionaire');
+            expect(review.review_img_url).toBe( 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png');
+            expect(review.review_body).toBe('Farmyard fun!');
+            expect(review.category).toBe('euro game');
+            expect(review.created_at).toBe('2021-01-18T10:00:20.514Z');
+            expect(review.votes).toBe(0);
+            expect(review.review_id).toBe(1);
+        })
+    })
+
+    test("status:404, tried to decerement votes by too large values, votes would be < 0 ", ()=>{
+        const voteInc = {voteInc :-2};
+
+        return request(app)
+        .patch('/api/reviews/1')
+        .send({voteInc})
+        .expect(404)
+        .then((response)=>{
+          expect(response.body.msg).toBe("Attempting to decrement votes by too much");
+        })
+    })
+
+    test("status:404, valid review_id but does not exist", ()=>{
+        const voteInc = {voteInc :-1};
+
+        return request(app)
+        .patch('/api/reviews/100000')
+        .send({voteInc})
+        .expect(404)
+        .then((response)=>{
+            expect(response.body.msg).toBe("ID not found");
+        })
+    })
+
+    test("status:400, invalid review_id", ()=>{
+        const voteInc = {voteInc :-1};
+
+        return request(app)
+        .patch('/api/reviews/bread')
+        .send({voteInc})
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Invalid ID given");
+        })
+    })
+
+    test("status:400, voteInc is wrong type", ()=>{
+        const voteInc = {voteInc :"hello"};
+
+        return request(app)
+        .patch('/api/reviews/1')
+        .send({voteInc})
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Incorrect type passed for voteInc");
+        })
+    })
+});
+
+
