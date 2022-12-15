@@ -1,6 +1,6 @@
 const {handle404s, handleCustomErrors, handle400s } = require('./controllers/controller.errors');
 
-const {getCategories, getReviews, getReviewById, getReviewCommentsById, postCommentByReviewId, patchReviewById} = require('./controllers/controller.boardgames');
+const {getCategories, getReviews, getReviewById, getReviewCommentsById, postCommentByReviewId, patchReviewById, getUsers} = require('./controllers/controller.boardgames');
 const express = require('express');
 
 const app = express();
@@ -12,6 +12,7 @@ app.get('/api/reviews', getReviews);
 app.get('/api/reviews/:review_id/comments', getReviewCommentsById);
 app.post('/api/reviews/:review_id/comments', postCommentByReviewId);
 app.patch('/api/reviews/:review_id', patchReviewById);
+app.get('/api/users', getUsers);
 
 app.all('/*', handle404s);
 
