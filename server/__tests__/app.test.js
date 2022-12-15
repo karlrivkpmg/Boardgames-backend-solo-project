@@ -279,4 +279,24 @@ afterAll(() => {
     })
   })
 
- 
+  describe('8. GET /api/users', () =>{
+
+    test("status:200, returns an array of category objects", ()=>{
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response)=>{
+            const users = response.body.users;
+            expect(true).toBe(Array.isArray(users));
+            expect(categories).toHaveLength(4);
+            categories.forEach(category =>{
+                expect(category).toEqual(
+                    expect.objectContaining({
+                        slug: expect.any(String),
+                        description: expect.any(String),
+                    })
+                )
+            })  
+        })
+    })
+  })
