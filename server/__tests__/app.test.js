@@ -413,3 +413,32 @@ describe('8. GET /api/users', () =>{
         })
     })
   })
+
+  describe('9. GET /api/reviews with queries', () =>{
+
+    test("status:200, accepts a category query and should return an array of review object who's category match this value", ()=>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(reviews).toHaveLength(13);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+                expect(review.category).toBe("dexterity")
+            })  
+            expect(reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+  })
