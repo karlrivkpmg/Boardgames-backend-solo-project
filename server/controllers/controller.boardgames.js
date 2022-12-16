@@ -1,4 +1,4 @@
-const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId, updateReviewById, selectUsers } = require('../models/model.boardgames')
+const { selectCategories, selectReviews, selectReviewById, selectReviewCommentsById, insertCommentByReviewId, updateReviewById, selectUsers, removeCommentById } = require('../models/model.boardgames')
 
 exports.getCategories = (req, res) => {
     selectCategories()
@@ -81,6 +81,17 @@ exports.getUsers = (req, res) =>{
     selectUsers()
     .then((users)=>{
         res.status(200).send({users});
+    })
+}
+
+exports.deleteCommentById = (req, res, next) =>{
+    const {comment_id} = req.params;
+    removeCommentById(comment_id)
+    .then(()=>{
+        res.status(204).send();
+    })
+    .catch((err)=>{
+        next(err);
     })
 }
 

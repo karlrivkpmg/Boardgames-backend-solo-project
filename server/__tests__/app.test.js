@@ -581,3 +581,31 @@ describe('8. GET /api/users', () =>{
     })
 
   })
+
+  describe('11. DELETE /api/comments/:comment_id, delete comment with parametric id', () =>{
+
+  test("status:204, returns nothing", ()=>{
+    return request(app)
+    .delete('/api/comments/2')
+    .expect(204);
+})
+
+test("status:404, valid comment_id but does not exist", ()=>{
+    return request(app)
+    .delete('/api/comments/100000')
+    .expect(404)
+    .then((response)=>{
+        expect(response.body.msg).toBe("ID not found");
+    })
+})
+
+test("status:400, invalid comment_id", ()=>{
+    return request(app)
+    .delete('/api/comments/bread')
+    .expect(400)
+    .then((response)=>{
+        expect(response.body.msg).toBe("Invalid ID given");
+    })
+})
+
+})
