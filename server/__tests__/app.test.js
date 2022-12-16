@@ -442,7 +442,7 @@ describe('8. GET /api/users', () =>{
         })
     })
     
-    test("status:200, category exists but no review has this category, should return an empty object", ()=>{
+    test("status:200, category exists but no review has this category, should return an empty array", ()=>{
         return request(app)
         .get('/api/reviews?category=children\'s games')
         .expect(200)
