@@ -413,3 +413,150 @@ describe('8. GET /api/users', () =>{
         })
     })
   })
+
+  describe('9. GET /api/reviews with queries', () =>{
+
+    test("status:200, accepts a category query and should return an array of review object who's category match this value", ()=>{
+        return request(app)
+        .get('/api/reviews?category=social deduction')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(reviews).toHaveLength(11);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+                expect(review.category).toBe("social deduction")
+            })  
+            expect(reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+    
+    test("status:200, category exists but no review has this category, should return an empty array", ()=>{
+        return request(app)
+        .get('/api/reviews?category=children\'s games')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(reviews).toEqual([]);
+        })
+    })
+
+    test("status:404, given a bad category query", ()=>{
+        return request(app)
+        .get('/api/reviews?category=asdf')
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Category does not exist");
+        })
+    })
+
+    test("status:200, accepts a sort_by query and should return an array of review object sorted based on that query", ()=>{
+        return request(app)
+        .get('/api/reviews?sort_by=designer')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(reviews).toHaveLength(13);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        category: expect.any(String)
+                    })
+                )
+            })  
+            expect(reviews).toBeSortedBy('designer', {descending: true});
+        })
+    })
+
+    test("status:400, given a bad sort_by query", ()=>{
+        return request(app)
+        .get('/api/reviews?sort_by=asdf')
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Column does not exist");
+        })
+    })
+
+    test("status:200, accepts a order query and should return an array of review object sorted by asc or desc", ()=>{
+        return request(app)
+        .get('/api/reviews?order=asc')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(reviews).toHaveLength(13);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        category: expect.any(String)
+                    })
+                )
+            })  
+            expect(reviews).toBeSortedBy('created_at', {descending: false});
+        })
+    })
+
+    test("status:400, given a bad order query", ()=>{
+        return request(app)
+        .get('/api/reviews?order=asdf')
+        .expect(400)
+        .then((response)=>{
+            expect(response.body.msg).toBe("Order format does not exist");
+        })
+    })
+
+    test("status:200, returns an array of review objects with no query and thus set to defaults, no category=empty, sort_by = created_at, order = desc", ()=>{
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(true).toBe(Array.isArray(reviews));
+            expect(reviews).toHaveLength(13);
+            reviews.forEach(review =>{
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        category: expect.any(String),
+                        comment_count: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                )
+            })  
+            expect(reviews).toBeSortedBy('created_at', {descending: true});
+        })
+    })
+  })
+
+ 
