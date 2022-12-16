@@ -7,10 +7,19 @@ exports.getCategories = (req, res) => {
     })
 }
 
-exports.getReviews = (req, res) =>{
-    selectReviews()
+exports.getReviews = (req, res, next) =>{
+    const {category, sort_by, order} = req.query;
+    promises = [selectCategories(), category, sort_by, order];
+
+    Promise.all(promises)
+    .then((promises)=>{
+        return selectReviews(promises);
+    })
     .then((reviews)=>{
         res.status(200).send({reviews});
+    })
+    .catch((err)=>{
+        next(err);
     })
 }
 

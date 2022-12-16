@@ -12,15 +12,54 @@ exports.selectCategories = () =>{
 }
 
     
-exports.selectReviews = () =>{
-    const sql = `SELECT title, designer, owner, review_img_url, category,reviews.created_at, reviews.votes, reviews.review_id, COUNT(comments.review_id) AS comment_count
+exports.selectReviews = (promises) =>{
+    const categories = promises[0];
+    const category = promises[1];
+    let sort_by = promises[2];
+    let order = promises[3];
+    const allowedCategories = categories.map(cat=> cat.slug);
+    const allowedSorts = ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'category', 'created_at', 'votes', 'review_id'];
+    const allowedOrders = ['asc', 'desc'];
+    const queryValues = [];
+
+    if(sort_by === undefined){
+        sort_by = 'created_at';
+    }
+
+    if(order === undefined){
+        order ='desc';
+    }
+
+    if(!allowedSorts.includes(sort_by)){
+        return Promise.reject({msg: "Column does not exist", status:400});
+    }
+
+    if(!allowedOrders.includes(order)){
+        return Promise.reject({msg: "Order format does not exist", status:400});
+    }
+
+    let sql = `SELECT title, designer, owner, review_img_url, category,reviews.created_at, reviews.votes, reviews.review_id, COUNT(comments.review_id) AS comment_count
     FROM reviews
     LEFT JOIN comments
     ON reviews.review_id = comments.review_id
-    GROUP BY title, designer, owner, review_img_url, category,reviews.created_at, reviews.votes, reviews.review_id
-    ORDER BY created_at desc;
     `
-    return db.query(sql)
+
+    if(category !== undefined){
+        if(allowedCategories.includes(category)){
+            queryValues.push(category);
+            sql += `WHERE reviews.category = $1 `;
+        }
+        else{
+            return Promise.reject({msg: "Category does not exist", status:400});
+        }
+       
+    }
+
+    sql +=  `
+    GROUP BY title, designer, owner, review_img_url, category,reviews.created_at, reviews.votes, reviews.review_id
+    ORDER BY ${sort_by} ${order};`
+
+    return db.query(sql, queryValues)
     .then((result)=>{
     return result.rows;
 })
