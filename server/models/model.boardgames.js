@@ -66,9 +66,13 @@ exports.selectReviews = (promises) =>{
 }
 
 exports.selectReviewById = (review_id) => {
-    const sql = `SELECT * 
+    const sql = `SELECT title, designer, owner, review_img_url, review_body, category,reviews.created_at, reviews.votes, reviews.review_id, COUNT(comments.review_id) AS comment_count
                 FROM reviews
-                WHERE review_id = $1;`
+                LEFT JOIN comments
+                ON reviews.review_id = comments.review_id
+                WHERE reviews.review_id = $1
+                GROUP BY
+                title, designer, owner, review_img_url, review_body, category, review_body, reviews.created_at, reviews.votes, reviews.review_id;`
     return db
     .query(sql, [review_id])
     .then((result)=>{
