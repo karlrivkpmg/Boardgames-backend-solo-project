@@ -441,8 +441,18 @@ describe('8. GET /api/users', () =>{
             expect(reviews).toBeSortedBy('created_at', {descending: true});
         })
     })
+    
+    test("status:200, category exists but no review has this category, should return an empty object", ()=>{
+        return request(app)
+        .get('/api/reviews?category=children\'s games')
+        .expect(200)
+        .then((response)=>{
+            const reviews = response.body.reviews;
+            expect(reviews).toEqual([]);
+        })
+    })
 
-    test("status:400, given a bad category query", ()=>{
+    test("status:404, given a bad category query", ()=>{
         return request(app)
         .get('/api/reviews?category=asdf')
         .expect(400)
