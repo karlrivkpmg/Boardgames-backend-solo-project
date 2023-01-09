@@ -1,9 +1,10 @@
 const {handle404s, handleCustomErrors, handle400s } = require('./controllers/controller.errors');
-
+const cors = require('cors');
 const {getCategories, getReviews, getReviewById, getReviewCommentsById, postCommentByReviewId, patchReviewById, getUsers, deleteCommentById} = require('./controllers/controller.boardgames');
 const express = require('express');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get('/api/categories', getCategories)

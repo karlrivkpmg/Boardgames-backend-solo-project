@@ -6,3 +6,14 @@ You are now connected to database "nc_games_test" as user "krivett".
  social deduction |    11
 (3 rows)
 
+  title   |   designer    |    owner    |                              review_img_url                               |  review_body  | category  |       created_at        | votes | review_id | comment_count 
+----------+---------------+-------------+---------------------------------------------------------------------------+---------------+-----------+-------------------------+-------+-----------+---------------
+ Agricola | Uwe Rosenberg | mallionaire | https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png | Farmyard fun! | euro game | 2021-01-18 10:00:20.514 |     1 |         1 |             0
+(1 row)
+
+ comment_id |            body             | review_id |   author    | votes |       created_at       
+------------+-----------------------------+-----------+-------------+-------+------------------------
+          2 | My dog loved this game too! |         3 | mallionaire |    13 | 2021-01-18 10:09:05.41
+(1 row)
+
+DELETE 1
