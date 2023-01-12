@@ -18,7 +18,7 @@ exports.selectReviews = (promises) =>{
     let sort_by = promises[2];
     let order = promises[3];
     const allowedCategories = categories.map(cat=> cat.slug);
-    const allowedSorts = ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'category', 'created_at', 'votes', 'review_id'];
+    const allowedSorts = ['title', 'designer', 'owner', 'review_img_url', 'review_body', 'category', 'created_at', 'votes', 'review_id', 'comment_count'];
     const allowedOrders = ['asc', 'desc'];
     const queryValues = [];
 
